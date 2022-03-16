@@ -52,6 +52,9 @@ public class TextNote extends Note implements Serializable{
     }
 
     public void exportTextToFile(String pathFolder) {
+        if (pathFolder.isEmpty()){
+            pathFolder = System.getProperty("user.dir");
+        }
         String name = this.getTitle().replaceAll(" ", "_");
         File file = new File(pathFolder + File.separator + name + ".txt");
         try(PrintWriter output = new PrintWriter(file)){
