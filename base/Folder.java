@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.io.*;
 import java.util.*;
 
-public class Folder implements Comparable<Folder>{
+public class Folder implements Comparable<Folder>, Serializable{
     
     private ArrayList<Note> notes;
     private String name;
@@ -52,27 +52,63 @@ public class Folder implements Comparable<Folder>{
     }
     
     public List<Note> searchNotes(String keywords){
-        String key = keywords.toLowerCase();
-        String[] arrOfStr = key.split("or");
-        ArrayList<Note> result = new ArrayList<Note>();
-        for (Note note: notes){
-            for (String a : arrOfStr){
-                if (note instanceof ImageNote){
-                    String title = note.getTitle().toLowerCase();
-                    if (title.contains(a)){
-                        result.add(note);
-                    }
-                }
-                else{
-                    String title = note.getTitle().toLowerCase();
-                    String content = ((TextNote)note).getContent().toLowerCase();
-                    if (title.contains(a) || content.contains(a)){
-                        result.add(note);
-                    }
-                }
-            }
+        List<Note> res = new ArrayList<Note>();
+
+		ArrayList<ArrayList<String>> patterns = new ArrayList<ArrayList<String>>();
+
+		// process keywords
+		String[] keyList = keywords.split(" ");
+		int i=0;
+		while(i<keyList.length) {
+			if(keyList[i].toLowerCase().equals("or")) {
+				i++;
+				patterns.get(patterns.size() - 1).add(keyList[i].toLowerCase());
+			} else {
+				ArrayList<String> newArr = new ArrayList<String>();
+				newArr.add(keyList[i].toLowerCase());
+				patterns.add(newArr);
+			}
+			i++;
+		}
+
+		for(Note n : notes) {
+			String toBeSearched = n.getTitle();
+			if(n instanceof TextNote) {
+				toBeSearched +=  ((TextNote)n).getContent();
+			}
+			toBeSearched = toBeSearched.toLowerCase();
+
+			boolean flag = true;
+			for(ArrayList<String> pattern : patterns) {
+				boolean flag2 = false;
+				for(String oneKey : pattern) {
+					if(toBeSearched.contains(oneKey)) {
+						flag2 = true;
+						break;
+					}
+				}
+				if(!flag2) {
+					flag = false;
+					break;
+				}
+			}
+			if(flag) res.add(n);
+		}
+        return res;
+    }
+
+    public boolean save(String file){
+        FileOutputStream fos = null;
+        ObjectOutputStream out = null;
+        try {
+            fos = new FileOutputStream(file);
+            out = new ObjectOutputStream(fos);
+            out.writeObject(this);
+            out.close();
+        } catch (Exception e) {
+            return false;
         }
-        return result;
+        return true;
     }
         
 }

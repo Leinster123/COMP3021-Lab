@@ -5,12 +5,26 @@ import java.util.List;
 import java.io.*;
 import java.util.*;
 
-public class NoteBook {
+public class NoteBook implements Serializable{
     
     private ArrayList<Folder> folders;
     
     public NoteBook(){
         folders = new ArrayList<Folder>();
+    }
+
+    public NoteBook(String file){
+        FileInputStream fis = null;
+        ObjectInputStream in = null;
+        try {
+            fis = new FileInputStream(file);
+            in = new ObjectInputStream(fis);
+            NoteBook n = (NoteBook) in.readObject();
+            folders = n.getFolders();
+            in.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     
     public boolean createTextNote(String folderName, String title){
@@ -65,5 +79,19 @@ public class NoteBook {
             result.addAll(f.searchNotes(keywords));
         }
         return result;
+    }
+
+    public boolean save(String file){
+        FileOutputStream fos = null;
+        ObjectOutputStream out = null;
+        try {
+            fos = new FileOutputStream(file);
+            out = new ObjectOutputStream(fos);
+            out.writeObject(this);
+            out.close();
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 }
