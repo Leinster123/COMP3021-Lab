@@ -3,6 +3,7 @@ package base;
 import java.io.*;
 
 public class TextNote extends Note implements Serializable{
+	private static final long serialVersionUID = 1L;
     public String content;
     
     public TextNote(String title){
@@ -22,6 +23,11 @@ public class TextNote extends Note implements Serializable{
     public String getContent(){
         return content;
     }
+    
+    public void setContent(String content) {
+    	this.content = content;
+    }
+    
     public boolean save(String file){
         FileOutputStream fos = null;
         ObjectOutputStream out = null;

@@ -5,7 +5,7 @@ import java.io.*;
 import java.util.*;
 
 public class Folder implements Comparable<Folder>, Serializable{
-    
+	private static final long serialVersionUID = 1L;
     private ArrayList<Note> notes;
     private String name;
     
@@ -16,6 +16,16 @@ public class Folder implements Comparable<Folder>, Serializable{
     
     public void addNote(Note note){
         notes.add(note);
+    }
+    
+    public boolean deleteNote(Note note) {
+    	try {
+    		notes.remove(note);
+    		return true;
+    	}
+    	catch(Exception ex) {
+    		return false;
+    	}
     }
     
     public String getName(){

@@ -6,6 +6,7 @@ import java.io.*;
 import java.util.*;
 
 public class NoteBook implements Serializable{
+	private static final long serialVersionUID = 1L;
     
     private ArrayList<Folder> folders;
     
@@ -93,5 +94,10 @@ public class NoteBook implements Serializable{
             return false;
         }
         return true;
+    }
+    
+    public void addFolder(String folderName) {
+    	Folder folder = new Folder(folderName);
+    	folders.add(folder);
     }
 }
